@@ -1,8 +1,13 @@
 package searchengine;
 
+import java.util.Scanner;
+
 public class SearchEngineMain {
     public static void main(String[] args) {
         SearchEngine engine = new SearchEngine();
-        engine.query("blockchain bitcoin sweden".toLowerCase());
+        System.out.println("Search: ");
+        Scanner scanner = new Scanner(System.in);
+        String query = scanner.nextLine();
+        engine.query(query.toLowerCase());
     }
 }

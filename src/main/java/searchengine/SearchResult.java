@@ -25,6 +25,6 @@ public class SearchResult implements Comparable<SearchResult> {
 
     @Override
     public String toString() {
-        return "score: " + score + " url: " + page.getUrl();
+        return "score: " + score + " pagerank: " + page.getPageRank() + " url: " + page.getFullUrl();
     }
 }

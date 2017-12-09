@@ -1,13 +1,11 @@
 package searchengine;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PageDB {
     private Map<String, Integer> wordToId = new HashMap<String, Integer>();
     private List<Page> pages = new ArrayList<Page>();
+    private HashSet<String> urls = new HashSet<String>();
 
     public int getIdForWord(String word) {
         if (wordToId.containsKey(word)) {
@@ -24,6 +22,9 @@ public class PageDB {
     }
 
     public void addPage(Page page) {
-        pages.add(page);
+        if (!urls.contains(page.getUrl())) {
+            pages.add(page);
+            urls.add(page.getUrl());
+        }
     }
 }

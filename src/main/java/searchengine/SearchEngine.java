@@ -22,6 +22,7 @@ public class SearchEngine {
             File lf = new File(f.getAbsolutePath().replaceFirst("words", "links"));
             generatePage(regenerateUrl(f.getName()), f, lf);
         }
+        calculatePageRank();
     }
 
     private String regenerateUrl(String filename) {
@@ -34,18 +35,15 @@ public class SearchEngine {
     }
 
     public ArrayList<SearchResult> query(String query) {
-        calculatePageRank();
         results = new ArrayList<SearchResult>();
         double[] content = new double[db.getPages().size()];
         double[] location = new double[db.getPages().size()];
         double[] distance = new double[db.getPages().size()];
-        int[] simpleCount = new int[db.getPages().size()];
         double[] pageRank = new double[db.getPages().size()];
         for (int i = 0; i < db.getPages().size(); i++) {
             Page page = db.getPages().get(i);
-            content[i] = getCountFrequencyScore(page, query);
-            location[i] = getCountLocationScore(page, query);
-            simpleCount[i] = getSimpleCount(page);
+            content[i] = getFrequencyScore(page, query);
+            location[i] = getLocationScore(page, query);
             pageRank[i] = page.getPageRank();
             distance[i] = getWordDistanceScore(page, query);
         }
@@ -64,7 +62,7 @@ public class SearchEngine {
         Collections.sort(results);
 
         System.out.println("\nResults for search \"" + query + "\":");
-        int no = 50;
+        int no = 5;
         for (int i = 0; i < no; i++) {
             System.out.println(results.get(i).toString());
         }
@@ -98,10 +96,9 @@ public class SearchEngine {
         }
     }
 
-    private double getCountFrequencyScore(Page page, String query) {
+    private double getFrequencyScore(Page page, String query) {
         double score = 0.0;
-        String[] qw = query.split(" ");
-        ArrayList<String> words = new ArrayList<String>(Arrays.asList(qw));
+        String[] words = query.split(" ");
         for (String w : words) {
             int id = db.getIdForWord(w);
             for (Integer pageWord : page.getWords()) {
@@ -113,10 +110,9 @@ public class SearchEngine {
         return score;
     }
 
-    private double getCountLocationScore(Page page, String query) {
+    private double getLocationScore(Page page, String query) {
         double score = 0.0;
-        String[] qw = query.split(" ");
-        ArrayList<String> words = new ArrayList<String>(Arrays.asList(qw));
+        String[] words = query.split(" ");
         for (String w : words) {
             int id = db.getIdForWord(w);
             boolean found = false;
@@ -134,38 +130,34 @@ public class SearchEngine {
         return score;
     }
 
-    /**
-     * TODO: If time
-     * */
     private double getWordDistanceScore(Page page, String query) {
-        double score = 100000;
+        double score = 0;
         String[] words = query.split(" ");
         if (words.length == 1) {
             return 1;
         }
-//        for (String word : words) {
-//
-//        }
-//        if (words.length < 2) {
-//            return 1.0;
-//        }
         for (int i = 1; i < words.length; i++) {
-            double distance1 = 0.0;//getCountLocationScore(page, words[i]) - getCountLocationScore(page, words[i-1]);
+            double distance1 = 0.0;
             double distance2 = 0.0;
             int id1 = db.getIdForWord(words[i]);
             int id2 = db.getIdForWord(words[i-1]);
+            boolean found1 = false;
+            boolean found2 = false;
             ArrayList<Integer> pageWords = page.getWords();
             for (int j = 0; j < pageWords.size(); j++) {
                 if (id1 == pageWords.get(j)) {
                     distance1 += j;
+                    found1 = true;
                 }
                 if (id2 == pageWords.get(j)) {
                     distance2 += j;
+                    found2 = true;
                 }
             }
-            double distance = distance1 - distance2;
-            if (distance < score) {
-                score = distance;
+            if (found1 && found2) {
+                score += distance1 - distance2;
+            } else {
+                score += 100000;
             }
         }
         return score;
@@ -184,7 +176,8 @@ public class SearchEngine {
     private void calculatePageRank() {
         int iterations = 20;
         System.out.println("Calculating Page Rank ...");
-        for (int i = 0; i < iterations; i++) {
+        System.out.println("number of pages: " + db.getPages().size());
+        for (int i = 0; i < 20; i++) {
             for (Page p : db.getPages()) {
                 iteratePageRank(p);
             }
@@ -192,16 +185,15 @@ public class SearchEngine {
         System.out.println("Done calculating Page Rank");
     }
 
-    private void iteratePageRank(Page page) {
+    private void iteratePageRank(Page p) {
         double pr = 0;
-        double dampening = 0.85;
-        for (Page p : db.getPages()) {
-            if (p.isLinkedTo(page.getUrl())) {
-                pr += p.getPageRank() / (double)p.linksCount();
+        for (Page po : db.getPages()) {
+            if (po.isLinkedTo(p.getUrl())) {
+                pr += po.getPageRank() / (double)po.linksCount();
             }
-            pr = dampening * pr + 0.15;
-            page.setPageRank(pr);
         }
+        pr = 0.85 * pr + 0.15;
+        p.setPageRank(pr);
     }
 
     private void generatePage(String url, File wordsFile, File linksFile) {

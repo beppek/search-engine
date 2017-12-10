@@ -11,7 +11,6 @@ public class SearchController {
     @PostMapping("/")
     public ArrayList<SearchResult> Search(@RequestParam(value="query") String query) {
         SearchEngine engine = new SearchEngine();
-        ArrayList<SearchResult> results = engine.query(query);
-        return results;
+        return engine.query(query.toLowerCase());
     }
 }

@@ -7,6 +7,7 @@ public class SearchResult implements Comparable<SearchResult> {
     @JsonIgnore
     private Page page;
     private String url;
+    private String fullUrl;
     private double score;
     private double pageRank;
     private double frequency;
@@ -15,7 +16,8 @@ public class SearchResult implements Comparable<SearchResult> {
 
     SearchResult(Page page, double score, double frequency, double location, double distance) {
         this.page = page;
-        this.url = page.getFullUrl();
+        this.url = page.getUrl();
+        this.fullUrl = page.getFullUrl();
         this.pageRank = page.getPageRank();
         this.frequency = frequency;
         this.location = location;
@@ -25,6 +27,10 @@ public class SearchResult implements Comparable<SearchResult> {
 
     public String getUrl() {
         return url;
+    }
+
+    public String getFullUrl() {
+        return fullUrl;
     }
 
     public double getScore() {

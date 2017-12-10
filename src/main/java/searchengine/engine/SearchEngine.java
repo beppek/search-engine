@@ -55,8 +55,11 @@ public class SearchEngine {
 
         for (int i = 0; i < db.getPages().size(); i++) {
             Page p = db.getPages().get(i);
-            double score = 1.0 * content[i] + 1.0 * pageRank[i] + 0.5 * location[i] + 0.5 * distance[i];
-            results.add(new SearchResult(p, score));
+//            double score = 1.0 * content[i] + 1.0 * pageRank[i] + 0.5 * location[i] + 0.5 * distance[i];
+            double score = 1.0 * content[i] + 1.0 * p.getPageRank() + 0.5 * location[i];// + 0.5 * distance[i];
+            if (score > 0.05) {
+                results.add(new SearchResult(p, score, content[i], location[i], distance[i]));
+            }
         }
 
         Collections.sort(results);
@@ -155,7 +158,11 @@ public class SearchEngine {
                 }
             }
             if (found1 && found2) {
-                score += distance1 - distance2;
+                if (distance1 < distance2) {
+                    score += distance2 - distance1;
+                } else {
+                    score += distance1 - distance2;
+                }
             } else {
                 score += 100000;
             }

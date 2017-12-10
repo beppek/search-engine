@@ -17,6 +17,10 @@ public class PageDB {
         }
     }
 
+    public void addWordFromFile(String word, Integer id) {
+        wordToId.put(word, id);
+    }
+
     public List<Page> getPages() {
         return pages;
     }
@@ -25,10 +29,18 @@ public class PageDB {
         return pages.get(i);
     }
 
+    public Map<String, Integer> getWordToId() {
+        return wordToId;
+    }
+
     public void addPage(Page page) {
         if (!urls.contains(page.getUrl())) {
             pages.add(page);
             urls.add(page.getUrl());
         }
+    }
+
+    public void addAllPages(ArrayList<Page> pages) {
+        this.pages.addAll(pages);
     }
 }

@@ -12,11 +12,24 @@ public class Page {
     private String fullUrl;
     private int linksCount;
 
+    public Page(String url) {
+        this.url = url;
+        this.fullUrl = "https://en.wikipedia.org" + url;
+    }
+
     public Page(String url, ArrayList<Integer> words, ArrayList<String> links) {
         this.url = url;
         this.words = words;
         this.links = new HashSet<String>(links);
         this.linksCount = links.size();
+        this.fullUrl = "https://en.wikipedia.org" + url;
+    }
+
+    public Page(String url, ArrayList<Integer> words, ArrayList<String> links, int linksCount) {
+        this.url = url;
+        this.words = words;
+        this.links = new HashSet<String>(links);
+        this.linksCount = linksCount;
         this.fullUrl = "https://en.wikipedia.org" + url;
     }
 
@@ -26,6 +39,18 @@ public class Page {
 
     public ArrayList<Integer> getWords() {
         return words;
+    }
+
+    public void setWords(ArrayList<Integer> words) {
+        this.words = words;
+    }
+
+    public Set<String> getLinks() {
+        return links;
+    }
+
+    public void setLinks(Set<String> links) {
+        this.links = links;
     }
 
     public double getPageRank() {
@@ -42,6 +67,10 @@ public class Page {
 
     public int linksCount() {
         return linksCount;
+    }
+
+    public void setLinksCount(int linksCount) {
+        this.linksCount = linksCount;
     }
 
     public boolean hasLinkTo(String url) {

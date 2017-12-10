@@ -1,4 +1,4 @@
-package searchengine;
+package searchengine.models;
 
 import java.util.*;
 
@@ -19,6 +19,10 @@ public class PageDB {
 
     public List<Page> getPages() {
         return pages;
+    }
+
+    public Page getPage(int i) {
+        return pages.get(i);
     }
 
     public void addPage(Page page) {

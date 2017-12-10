@@ -1,4 +1,4 @@
-package searchengine.ping;
+package searchengine.routes;
 
 public class Pong {
     private final String response;

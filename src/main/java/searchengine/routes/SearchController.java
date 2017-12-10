@@ -1,6 +1,8 @@
-package searchengine;
+package searchengine.routes;
 
 import org.springframework.web.bind.annotation.*;
+import searchengine.engine.SearchEngine;
+import searchengine.models.SearchResult;
 
 import java.util.ArrayList;
 

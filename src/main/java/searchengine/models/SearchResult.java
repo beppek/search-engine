@@ -1,4 +1,4 @@
-package searchengine;
+package searchengine.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -14,7 +14,7 @@ public class SearchResult implements Comparable<SearchResult> {
     private double location;
     private double distance;
 
-    SearchResult(Page page, double score, double frequency, double location, double distance) {
+    public SearchResult(Page page, double score, double frequency, double location, double distance) {
         this.page = page;
         this.url = page.getUrl();
         this.fullUrl = page.getFullUrl();

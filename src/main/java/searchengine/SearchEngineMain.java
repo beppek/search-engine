@@ -1,5 +1,7 @@
 package searchengine;
 
+import searchengine.engine.SearchEngine;
+
 import java.util.Scanner;
 
 public class SearchEngineMain {

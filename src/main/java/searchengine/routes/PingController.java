@@ -1,4 +1,4 @@
-package searchengine.ping;
+package searchengine.routes;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -3,7 +3,7 @@ package searchengine.engine;
 import searchengine.models.Page;
 import searchengine.models.PageDB;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ContentBasedMetrics {
 
@@ -60,7 +60,7 @@ public class ContentBasedMetrics {
         for (String w : words) {
             int id = db.getIdForWord(w);
             boolean found = false;
-            ArrayList<Integer> pageWords = page.getWords();
+            List<Integer> pageWords = page.getWords();
             for (int i = 0; i < pageWords.size(); i++) {
                 if (id == pageWords.get(i)) {
                     score += i;
@@ -78,34 +78,36 @@ public class ContentBasedMetrics {
         double score = 0;
         String[] words = query.split(" ");
         if (words.length == 1) {
-            return 1;
+            return 0;
         }
-        for (int i = 1; i < words.length; i++) {
-            double distance1 = 0.0;
-            double distance2 = 0.0;
+        for (int i = 0; i < words.length - 1; i++) {
             int id1 = db.getIdForWord(words[i]);
-            int id2 = db.getIdForWord(words[i-1]);
-            boolean found1 = false;
-            boolean found2 = false;
-            ArrayList<Integer> pageWords = page.getWords();
-            for (int j = 0; j < pageWords.size(); j++) {
-                if (id1 == pageWords.get(j)) {
-                    distance1 += j;
-                    found1 = true;
+            for (int j = i + 1; j < words.length; j++) {
+                double distance1 = 0.0;
+                double distance2 = 0.0;
+                int id2 = db.getIdForWord(words[j]);
+                boolean found1 = false;
+                boolean found2 = false;
+                List<Integer> pageWords = page.getWords();
+                for (int k = 0; k < pageWords.size(); k++) {
+                    if (id1 == pageWords.get(k)) {
+                        distance1 += k;
+                        found1 = true;
+                    }
+                    if (id2 == pageWords.get(k)) {
+                        distance2 += k;
+                        found2 = true;
+                    }
                 }
-                if (id2 == pageWords.get(j)) {
-                    distance2 += j;
-                    found2 = true;
-                }
-            }
-            if (found1 && found2) {
-                if (distance1 < distance2) {
-                    score += distance2 - distance1;
+                if (found1 && found2) {
+                    if (distance1 < distance2) {
+                        score += distance2 - distance1;
+                    } else {
+                        score += distance1 - distance2;
+                    }
                 } else {
-                    score += distance1 - distance2;
+                    score += 100000;
                 }
-            } else {
-                score += 100000;
             }
         }
         return score;

@@ -11,16 +11,6 @@ public class PageRankMetrics {
         this.db = db;
     }
 
-//    int getSimpleCount(Page page) {
-//        int count = 0;
-//        for (Page p : db.getPages()) {
-//            if (p.isLinkedTo(page.getUrl())) {
-//                count++;
-//            }
-//        }
-//        return count;
-//    }
-
     void calculatePageRank() {
         int iterations = 20;
         System.out.println("Calculating Page Rank ...");

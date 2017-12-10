@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * The search engine itself, a crude beginning to a brilliant future
+ * */
 public class SearchEngine {
     private PageDB db;
     private ArrayList<SearchResult> results;
@@ -18,6 +21,9 @@ public class SearchEngine {
         init();
     }
 
+    /**
+     * Initialize the db, either by reading pages from the files in the dataset or reading from index.
+     * */
     private void init() {
         FileHandler fh = new FileHandler(this.db);
         if (fh.indexExists()) {
@@ -38,6 +44,10 @@ public class SearchEngine {
         }
     }
 
+    /**
+     * Query and rank the results
+     * TODO: normalize page rank?
+     * */
     public ArrayList<SearchResult> query(String query) {
         results = new ArrayList<SearchResult>();
         ContentBasedMetrics cbm = new ContentBasedMetrics(this.db);

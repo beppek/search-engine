@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * A page from the dataset
+ * */
 public class Page {
     private String url;
     private ArrayList<Integer> words;

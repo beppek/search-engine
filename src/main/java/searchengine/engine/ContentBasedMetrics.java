@@ -5,6 +5,9 @@ import searchengine.models.PageDB;
 
 import java.util.List;
 
+/**
+ * Calculates content based ranking metrics and normalizes the scores
+ * */
 public class ContentBasedMetrics {
 
     private PageDB db;
@@ -40,6 +43,10 @@ public class ContentBasedMetrics {
         }
     }
 
+    /**
+     * Counts the frequency for the word
+     * higher is better
+     * */
     double getFrequencyScore(Page page, String query) {
         double score = 0.0;
         String[] words = query.split(" ");
@@ -54,6 +61,10 @@ public class ContentBasedMetrics {
         return score;
     }
 
+    /**
+     * Calculates location of the word on the page
+     * Lower is better
+     * */
     double getLocationScore(Page page, String query) {
         double score = 0.0;
         String[] words = query.split(" ");
@@ -74,6 +85,10 @@ public class ContentBasedMetrics {
         return score;
     }
 
+    /**
+     * Calculates the distance between the words in the query on the page
+     * Lower score is better
+     * */
     double getWordDistanceScore(Page page, String query) {
         double score = 0;
         String[] words = query.split(" ");

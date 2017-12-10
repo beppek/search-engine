@@ -2,6 +2,9 @@ package searchengine.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+/**
+ * Search result representation of a page to return to the client as JSON
+ * */
 public class SearchResult implements Comparable<SearchResult> {
 
     @JsonIgnore

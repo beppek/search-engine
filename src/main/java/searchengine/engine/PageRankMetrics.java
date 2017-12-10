@@ -3,6 +3,9 @@ package searchengine.engine;
 import searchengine.models.Page;
 import searchengine.models.PageDB;
 
+/**
+ * Calculates PageRank for a page based on links from other pages and their respective page rank and number of links
+ * */
 public class PageRankMetrics {
 
     private PageDB db;

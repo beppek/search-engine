@@ -4,6 +4,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Ping controller to test connection
+ * */
 @RestController
 @CrossOrigin()
 public class PingController {

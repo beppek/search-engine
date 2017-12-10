@@ -8,6 +8,11 @@ import searchengine.models.PageDB;
 import java.io.*;
 import java.util.*;
 
+/**
+ * Handles everything files-related
+ * Reads the original dataset from file or reads the saved index
+ * Also saves the index as json
+ * */
 public class FileHandler {
 
     private PageDB db;
@@ -22,6 +27,9 @@ public class FileHandler {
         return pf.exists() && !pf.isDirectory();
     }
 
+    /**
+     * Saves the PageDB to json file
+     * */
     public void savePageDBIndex() throws IOException {
         System.out.println("Saving index to file...");
         File f = new File(pageIndexPath);
@@ -33,6 +41,9 @@ public class FileHandler {
         System.out.println("Done saving index to file");
     }
 
+    /**
+     * Reads the PageDB from json file
+     * */
     public void readDB() throws IOException {
         System.out.println("Reading index from file...");
         File f = new File(pageIndexPath);
@@ -59,6 +70,9 @@ public class FileHandler {
         System.out.println("Done reading index from file");
     }
 
+    /**
+     * Reads the data set from files and generates Page representations
+     * */
     public void readDataFiles() {
         System.out.println("Start reading pages from files...");
         ArrayList<File> files = new ArrayList<File>();
@@ -74,6 +88,9 @@ public class FileHandler {
         System.out.println("Done reading pages from files");
     }
 
+    /**
+     * Reads the PageDB index from json file
+     * */
     private ArrayList<Page> readPagesFromJson(JsonReader reader) throws IOException {
         ArrayList<Page> pages = new ArrayList<Page>();
         int i = 0;
@@ -81,9 +98,11 @@ public class FileHandler {
             reader.beginObject();
             while (reader.hasNext()) {
                 String name = reader.nextName();
+
                 if (name.equals("url")) {
                     String url = reader.nextString();
                     pages.add(new Page(url));
+
                 } else if (name.equals("words")) {
                     reader.beginArray();
                     ArrayList<Integer> words = new ArrayList<Integer>();
@@ -92,6 +111,7 @@ public class FileHandler {
                     }
                     pages.get(i).setWords(words);
                     reader.endArray();
+
                 } else if (name.equals("links")) {
                     reader.beginArray();
                     Set<String> links = new HashSet<String>();
@@ -100,14 +120,18 @@ public class FileHandler {
                     }
                     pages.get(i).setLinks(links);
                     reader.endArray();
+
                 } else if (name.equals("pageRank")) {
                     Double pageRank = reader.nextDouble();
                     pages.get(i).setPageRank(pageRank);
+
                 } else if (name.equals("linksCount")) {
                     int linksCount = reader.nextInt();
                     pages.get(i).setLinksCount(linksCount);
                     i++;
+
                 } else {
+                    //Read any strings that are not needed to recreate the db and just ignore them
                     String s = reader.nextString();
                 }
             }
@@ -116,6 +140,9 @@ public class FileHandler {
         return pages;
     }
 
+    /**
+     * Recreates the internal "/wiki/" link structure from the filename
+     * */
     private String regenerateUrl(String filename) {
         String[] name = filename.split("\\.");
         String path = name[0].replaceAll("_+", "_");
@@ -125,6 +152,9 @@ public class FileHandler {
         return "/wiki/" + path;
     }
 
+    /**
+     * Generates a page and adds it to the db
+     * */
     private void generatePage(String url, File wordsFile, File linksFile) {
         try {
             ArrayList<Integer> words = new ArrayList<Integer>();

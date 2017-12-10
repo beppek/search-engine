@@ -6,6 +6,9 @@ import searchengine.models.SearchResult;
 
 import java.util.ArrayList;
 
+/**
+ * REST endpoint to query the engine
+ * */
 @RestController
 @CrossOrigin()
 public class SearchController {

@@ -2,6 +2,9 @@ package searchengine.models;
 
 import java.util.*;
 
+/**
+ * Page database to hold the pages in memory
+ * */
 public class PageDB {
     private Map<String, Integer> wordToId = new HashMap<String, Integer>();
     private List<Page> pages = new ArrayList<Page>();

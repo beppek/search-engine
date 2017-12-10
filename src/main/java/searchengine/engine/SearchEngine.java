@@ -5,22 +5,37 @@ import searchengine.models.PageDB;
 import searchengine.models.SearchResult;
 import searchengine.utils.FileHandler;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class SearchEngine {
-    private PageDB db = new PageDB();
+    private PageDB db;
     private ArrayList<SearchResult> results;
 
     public SearchEngine() {
+        this.db = new PageDB();
+        init();
+    }
+
+    private void init() {
         FileHandler fh = new FileHandler(this.db);
-        fh.readDataFiles();
-        PageRankMetrics prm = new PageRankMetrics(this.db);
-        prm.calculatePageRank();
+        if (fh.indexExists()) {
+            try {
+                fh.readDB();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            fh.readDataFiles();
+            PageRankMetrics prm = new PageRankMetrics(this.db);
+            prm.calculatePageRank();
+            try {
+                fh.savePageDBIndex();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public ArrayList<SearchResult> query(String query) {
@@ -45,17 +60,21 @@ public class SearchEngine {
 
         for (int i = 0; i < db.getPages().size(); i++) {
             Page p = db.getPage(i);
-//            double score = 1.0 * content[i] + 1.0 * pageRank[i] + 0.5 * location[i] + 0.5 * distance[i];
-            double score = 1.0 * content[i] + 0.5 * location[i] + 1.0 * p.getPageRank() + 0.5 * distance[i];
-            if (score > 0.1) {
-                results.add(new SearchResult(p, score, content[i], location[i], distance[i]));
+            //Pages with no mention of the search query shouldn't be added to result
+            if (content[i] > 0) {
+                double score = 1.0 * content[i] + 0.8 * location[i] + 0.7 * p.getPageRank() + 0.5 * distance[i];
+                //Normalize page rank?
+//              double score = 1.0 * content[i] + 1.0 * pageRank[i] + 0.5 * location[i] + 0.5 * distance[i];
+                if (score > 0.1) {
+                    results.add(new SearchResult(p, score, content[i], location[i], distance[i]));
+                }
             }
         }
 
         Collections.sort(results);
 
         System.out.println("\nResults for search \"" + query + "\":");
-        int no = 5;
+        int no = results.size() < 5 ? results.size() : 5;
         for (int i = 0; i < no; i++) {
             System.out.println(results.get(i).toString());
         }

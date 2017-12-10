@@ -24,41 +24,17 @@ public class FileHandler {
 
     public void savePageDBIndex() throws IOException {
         System.out.println("Saving index to file...");
-        savePageIndex();
-        System.out.println("Done saving index to file");
-    }
-
-    public void readDB() throws IOException {
-        System.out.println("Reading index from file...");
-        readPageIndex();
-        System.out.println("Done reading index from file");
-    }
-
-    public void readDataFiles() {
-        System.out.println("Start reading pages from files...");
-        ArrayList<File> files = new ArrayList<File>();
-        File wordsDir = new File("data/words/");
-        File[] subs = wordsDir.listFiles();
-        for (File s : subs) {
-            Collections.addAll(files, s.listFiles());
-        }
-        for (File f : files) {
-            File lf = new File(f.getAbsolutePath().replaceFirst("words", "links"));
-            generatePage(regenerateUrl(f.getName()), f, lf);
-        }
-        System.out.println("Done reading pages from files");
-    }
-
-    private void savePageIndex() throws IOException {
         File f = new File(pageIndexPath);
         f.createNewFile();
         BufferedWriter w = new BufferedWriter(new FileWriter(f.getAbsoluteFile()));
         Gson gson = new Gson();
         w.write(gson.toJson(db));
         w.close();
+        System.out.println("Done saving index to file");
     }
 
-    private void readPageIndex() throws IOException {
+    public void readDB() throws IOException {
+        System.out.println("Reading index from file...");
         File f = new File(pageIndexPath);
         JsonReader reader = new JsonReader(new FileReader(f));
         Map<String, Integer> wordToInt = new HashMap<String, Integer>();
@@ -77,8 +53,30 @@ public class FileHandler {
         System.out.println(p);
 
         reader.beginArray();
-        int i = 0;
+        db.addAllPages(readPagesFromJson(reader));
+
+        reader.endArray();
+        System.out.println("Done reading index from file");
+    }
+
+    public void readDataFiles() {
+        System.out.println("Start reading pages from files...");
+        ArrayList<File> files = new ArrayList<File>();
+        File wordsDir = new File("data/words/");
+        File[] subs = wordsDir.listFiles();
+        for (File s : subs) {
+            Collections.addAll(files, s.listFiles());
+        }
+        for (File f : files) {
+            File lf = new File(f.getAbsolutePath().replaceFirst("words", "links"));
+            generatePage(regenerateUrl(f.getName()), f, lf);
+        }
+        System.out.println("Done reading pages from files");
+    }
+
+    private ArrayList<Page> readPagesFromJson(JsonReader reader) throws IOException {
         ArrayList<Page> pages = new ArrayList<Page>();
+        int i = 0;
         while (reader.hasNext()) {
             reader.beginObject();
             while (reader.hasNext()) {
@@ -115,9 +113,7 @@ public class FileHandler {
             }
             reader.endObject();
         }
-        reader.endArray();
-        System.out.println(pages.size());
-        db.addAllPages(pages);
+        return pages;
     }
 
     private String regenerateUrl(String filename) {

@@ -1,4 +1,4 @@
-package searchengine;
+package searchengine.models;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,11 +10,13 @@ public class Page {
     private Set<String> links;
     private double pageRank = 1.0;
     private String fullUrl;
+    private int linksCount;
 
-    Page(String url, ArrayList<Integer> words, ArrayList<String> links) {
+    public Page(String url, ArrayList<Integer> words, ArrayList<String> links) {
         this.url = url;
         this.words = words;
         this.links = new HashSet<String>(links);
+        this.linksCount = links.size();
         this.fullUrl = "https://en.wikipedia.org" + url;
     }
 
@@ -24,10 +26,6 @@ public class Page {
 
     public ArrayList<Integer> getWords() {
         return words;
-    }
-
-    public Set<String> getLinks() {
-        return links;
     }
 
     public double getPageRank() {
@@ -43,10 +41,10 @@ public class Page {
     }
 
     public int linksCount() {
-        return links.size();
+        return linksCount;
     }
 
-    public boolean isLinkedTo(String url) {
+    public boolean hasLinkTo(String url) {
         return links.contains(url);
     }
 

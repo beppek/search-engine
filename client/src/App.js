@@ -12,19 +12,24 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
+import CircularProgress from 'material-ui/CircularProgress';
 
 class App extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      results: null
+      results: null,
+      loading: false
     }
   }
 
 
   handleSubmit = (e) => {
     e.preventDefault();
+    this.setState({
+      loading: true
+    });
     let query = e.target.query.value;
     let formData = new FormData();
     formData.append('query', query);
@@ -33,7 +38,8 @@ class App extends Component {
       .then((data) => {
         console.log(data);
         this.setState({
-          results: data.data
+          results: data.data,
+          loading: false
         });
       })
       .catch(err => {
@@ -42,7 +48,7 @@ class App extends Component {
   }
 
   render() {
-    let {results} = this.state;
+    let {results, loading} = this.state;
     let searchResults = [];
     if (results) {
       results.forEach(result => {
@@ -68,7 +74,7 @@ class App extends Component {
               hintText="Search"
               floatingLabelText="Search"
             />
-              {/* <input name="query" type="text" placeholder="search" /> */}
+            {loading && <CircularProgress />}
             </form>
           </header>
           <Table className="search-results">

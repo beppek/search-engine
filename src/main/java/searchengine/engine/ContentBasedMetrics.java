@@ -73,7 +73,7 @@ public class ContentBasedMetrics {
             boolean found = false;
             List<Integer> pageWords = page.getWords();
             for (int i = 0; i < pageWords.size(); i++) {
-                if (id == pageWords.get(i)) {
+                if (!found && id == pageWords.get(i)) {
                     score += i;
                     found = true;
                 }
@@ -105,11 +105,11 @@ public class ContentBasedMetrics {
                 boolean found2 = false;
                 List<Integer> pageWords = page.getWords();
                 for (int k = 0; k < pageWords.size(); k++) {
-                    if (id1 == pageWords.get(k)) {
+                    if (!found1 && id1 == pageWords.get(k)) {
                         distance1 += k;
                         found1 = true;
                     }
-                    if (id2 == pageWords.get(k)) {
+                    if (!found2 && id2 == pageWords.get(k)) {
                         distance2 += k;
                         found2 = true;
                     }
